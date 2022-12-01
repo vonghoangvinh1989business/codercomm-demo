@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 import apiService from "../../app/apiService";
 
 const initialState = {
@@ -24,6 +25,24 @@ const slice = createSlice({
       state.isLoading = false;
       state.error = null;
 
+      const { users, count, totalPages } = action.payload?.data;
+      users.forEach((user) => (state.usersById[user._id] = user));
+      state.currentPageUsers = users.map((user) => user._id);
+      state.totalUsers = count;
+      state.totalPages = totalPages;
+    },
+    getFriendsSuccess(state, action) {
+      state.isLoading = false;
+      state.error = null;
+      const { users, count, totalPages } = action.payload?.data;
+      users.forEach((user) => (state.usersById[user._id] = user));
+      state.currentPageUsers = users.map((user) => user._id);
+      state.totalUsers = count;
+      state.totalPages = totalPages;
+    },
+    getFriendRequestsSuccess(state, action) {
+      state.isLoading = false;
+      state.error = null;
       const { users, count, totalPages } = action.payload?.data;
       users.forEach((user) => (state.usersById[user._id] = user));
       state.currentPageUsers = users.map((user) => user._id);
@@ -77,6 +96,39 @@ export const getUsers =
       dispatch(slice.actions.getUsersSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.hasError(error.message));
+      toast.error(error.message);
+    }
+  };
+
+export const getFriends =
+  ({ filterName, page = 1, limit = 12 }) =>
+  async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const params = { page, limit };
+      if (filterName) params.name = filterName;
+      const response = await apiService.get("/friends", { params });
+      dispatch(slice.actions.getFriendsSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.hasError(error.message));
+      toast.error(error.message);
+    }
+  };
+
+export const getFriendRequests =
+  ({ filterName, page = 1, limit = 12 }) =>
+  async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const params = { page, limit };
+      if (filterName) params.name = filterName;
+      const response = await apiService.get("/friends/requests/incoming", {
+        params,
+      });
+      dispatch(slice.actions.getFriendRequestsSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.hasError(error.message));
+      toast.error(error.message);
     }
   };
 
@@ -92,8 +144,10 @@ export const sendFriendRequest = (targetUserId) => async (dispatch) => {
         targetUserId,
       })
     );
+    toast.success("Request sent");
   } catch (error) {
     dispatch(slice.actions.hasError(error.message));
+    toast.error(error.message);
   }
 };
 
@@ -109,8 +163,10 @@ export const declineRequest = (targetUserId) => async (dispatch) => {
         targetUserId,
       })
     );
+    toast.success("Request declined");
   } catch (error) {
     dispatch(slice.actions.hasError(error.message));
+    toast.error(error.message);
   }
 };
 
@@ -126,8 +182,10 @@ export const acceptRequest = (targetUserId) => async (dispatch) => {
         targetUserId,
       })
     );
+    toast.success("Request accepted");
   } catch (error) {
     dispatch(slice.actions.hasError(error.message));
+    toast.error(error.message);
   }
 };
 
@@ -143,8 +201,10 @@ export const cancelRequest = (targetUserId) => async (dispatch) => {
         targetUserId,
       })
     );
+    toast.success("Request cancelled");
   } catch (error) {
     dispatch(slice.actions.hasError(error.message));
+    toast.error(error.message);
   }
 };
 
@@ -158,7 +218,9 @@ export const removeFriend = (targetUserId) => async (dispatch) => {
         targetUserId,
       })
     );
+    toast.success("Friend removed");
   } catch (error) {
     dispatch(slice.actions.hasError(error.message));
+    toast.error(error.message);
   }
 };
