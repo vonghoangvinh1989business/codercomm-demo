@@ -54,7 +54,6 @@ const slice = createSlice({
       state.postsById = {};
       state.currentPagePosts = [];
     },
-
     deletePostSuccess(state, action) {
       state.isLoading = false;
       state.error = null;
@@ -73,7 +72,7 @@ export const deletePost =
     dispatch(slice.actions.startLoading());
     try {
       const response = await apiService.delete(`/posts/${postId}`);
-      dispatch(slice.actions.deletePostSuccess({ ...response.data?.data }));
+      dispatch(slice.actions.deletePostSuccess(response.data?.data));
       dispatch(getPosts({ userId, page }));
       toast.success("POST DELETED");
     } catch (error) {

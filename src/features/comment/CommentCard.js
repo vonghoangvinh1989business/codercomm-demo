@@ -1,9 +1,44 @@
-import React from "react";
-import { Avatar, Box, Paper, Stack, Typography } from "@mui/material";
+import React, { useState } from "react";
+import {
+  Avatar,
+  Box,
+  Paper,
+  Stack,
+  Typography,
+  IconButton,
+} from "@mui/material";
 import { fDate } from "../../utils/formatTime";
 import CommentReaction from "./CommentReaction";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ConfirmationDialog from "../../components/ConfirmationDialog";
+import { useDispatch } from "react-redux";
+import useAuth from "../../hooks/useAuth";
+import { deleteComment } from "./commentSlice";
 
-function CommentCard({ comment }) {
+function CommentCard({ comment, postId, page }) {
+  // get current user logged in
+  const { user } = useAuth();
+
+  // get author of current comment
+  const commentAuthorId = comment.author._id;
+
+  const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
+
+  const handleDeleteConfirmation = () => {
+    setOpenConfirmationDialog(true);
+  };
+
+  const handleCloseConfirmationDialog = (e) => {
+    setOpenConfirmationDialog(false);
+  };
+
+  const dispatch = useDispatch();
+
+  const handleAgreeConfirmation = () => {
+    setOpenConfirmationDialog(false);
+    dispatch(deleteComment({ commentId: comment._id, postId, page }));
+  };
+
   return (
     <Stack direction="row" spacing={2}>
       <Avatar alt={comment.author?.name} src={comment.author?.avatarUrl} />
@@ -28,6 +63,22 @@ function CommentCard({ comment }) {
           <CommentReaction comment={comment} />
         </Box>
       </Paper>
+
+      {user._id === commentAuthorId && (
+        <Stack>
+          <IconButton onClick={handleDeleteConfirmation}>
+            <DeleteIcon sx={{ fontSize: 20 }} />
+          </IconButton>
+
+          <ConfirmationDialog
+            openConfirmationDialog={openConfirmationDialog}
+            handleCloseConfirmationDialog={handleCloseConfirmationDialog}
+            handleAgreeConfirmation={handleAgreeConfirmation}
+            title="Delete Confirmation"
+            content="Are you sure you want to delete this comment?"
+          />
+        </Stack>
+      )}
     </Stack>
   );
 }

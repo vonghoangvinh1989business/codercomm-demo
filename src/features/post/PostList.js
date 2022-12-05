@@ -1,15 +1,14 @@
 import { LoadingButton } from "@mui/lab";
 import { Box, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import PostCard from "./PostCard";
 import { getPosts } from "./postSlice";
 
 function PostList({ userId }) {
   const [page, setPage] = useState(1);
   const { currentPagePosts, postsById, totalPosts, isLoading } = useSelector(
-    (state) => state.post,
-    shallowEqual
+    (state) => state.post
   );
   const posts = currentPagePosts.map((postId) => postsById[postId]);
   const dispatch = useDispatch();
