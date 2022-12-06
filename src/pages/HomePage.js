@@ -4,9 +4,11 @@ import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import ContactMailIcon from "@mui/icons-material/ContactMail";
 import PersonAddRoundedIcon from "@mui/icons-material/PersonAddRounded";
+import MarkEmailReadIcon from "@mui/icons-material/MarkEmailRead";
 import Profile from "../features/user/Profile";
 import FriendList from "../features/friend/FriendList";
 import FriendRequests from "../features/friend/FriendRequests";
+import FriendRequestsSent from "../features/friend/FriendRequestsSent";
 import ProfileCover from "../features/user/ProfileCover";
 import AddFriend from "../features/friend/AddFriend";
 import { Box, Card, Container, Tab, Tabs } from "@mui/material";
@@ -52,6 +54,11 @@ function HomePage() {
       value: "requests",
       icon: <ContactMailIcon sx={{ fontSize: 24 }} />,
       component: <FriendRequests />,
+    },
+    {
+      value: "outgoing_requests",
+      icon: <MarkEmailReadIcon sx={{ fontSize: 24 }} />,
+      component: <FriendRequestsSent />,
     },
     {
       value: "add_friend",
