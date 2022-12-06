@@ -66,11 +66,12 @@ const slice = createSlice({
     updatePostSuccess(state, action) {
       state.isLoading = false;
       state.error = null;
-      const { _id, content, image } = action.payload;
+      const { _id, content, image, updatedAt } = action.payload;
       state.postsById[_id] = {
         ...state.postsById[_id],
         content,
         image,
+        updatedAt,
       };
     },
   },
