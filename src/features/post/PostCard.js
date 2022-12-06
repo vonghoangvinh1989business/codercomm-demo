@@ -8,6 +8,7 @@ import {
   Typography,
   CardHeader,
   IconButton,
+  Tooltip,
 } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import { fDate } from "../../utils/formatTime";
@@ -86,12 +87,16 @@ function PostCard({ post, page }) {
           user._id === postAuthorId && (
             <>
               <Stack direction="row">
-                <IconButton onClick={handleDeleteConfirmation}>
-                  <DeleteIcon sx={{ fontSize: 20 }} />
-                </IconButton>
-                <IconButton onClick={handleEdit}>
-                  <EditIcon sx={{ fontSize: 20 }} />
-                </IconButton>
+                <Tooltip title="Only author of this post can delete.">
+                  <IconButton onClick={handleDeleteConfirmation}>
+                    <DeleteIcon sx={{ fontSize: 20 }} />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Only author of this post can edit.">
+                  <IconButton onClick={handleEdit}>
+                    <EditIcon sx={{ fontSize: 20 }} />
+                  </IconButton>
+                </Tooltip>
               </Stack>
               <ConfirmationDialog
                 openConfirmationDialog={openConfirmationDialog}

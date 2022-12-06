@@ -22,7 +22,7 @@ const UpdatePostSchema = yup.object().shape({
 });
 
 function PostEditDialog({ post, openEditForm, handleCloseEditPostForm }) {
-  const isLoading = useSelector((state) => state.user.isLoading);
+  const isLoading = useSelector((state) => state.post.isLoading);
 
   const defaultValues = {
     content: post?.content || "",

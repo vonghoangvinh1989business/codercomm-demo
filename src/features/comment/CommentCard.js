@@ -6,6 +6,7 @@ import {
   Stack,
   Typography,
   IconButton,
+  Tooltip,
 } from "@mui/material";
 import { fDate } from "../../utils/formatTime";
 import CommentReaction from "./CommentReaction";
@@ -66,9 +67,11 @@ function CommentCard({ comment, postId, page }) {
 
       {user._id === commentAuthorId && (
         <Stack>
-          <IconButton onClick={handleDeleteConfirmation}>
-            <DeleteIcon sx={{ fontSize: 20 }} />
-          </IconButton>
+          <Tooltip title="Only author of this comment can delete.">
+            <IconButton onClick={handleDeleteConfirmation}>
+              <DeleteIcon sx={{ fontSize: 20 }} />
+            </IconButton>
+          </Tooltip>
 
           <ConfirmationDialog
             openConfirmationDialog={openConfirmationDialog}
