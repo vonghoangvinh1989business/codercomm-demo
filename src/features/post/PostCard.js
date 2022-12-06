@@ -20,6 +20,7 @@ import ConfirmationDialog from "../../components/ConfirmationDialog";
 import { useDispatch } from "react-redux";
 import useAuth from "../../hooks/useAuth";
 import { deletePost } from "./postSlice";
+import PostEditDialog from "./PostEditDialog";
 
 function PostCard({ post, page }) {
   // get current user logged in
@@ -29,6 +30,16 @@ function PostCard({ post, page }) {
   const postAuthorId = post.author._id;
 
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
+
+  const [openEditForm, setOpenEditForm] = useState(false);
+
+  const handleEdit = () => {
+    setOpenEditForm(true);
+  };
+
+  const handleCloseEditPostForm = () => {
+    setOpenEditForm(false);
+  };
 
   const handleDeleteConfirmation = () => {
     setOpenConfirmationDialog(true);
@@ -73,14 +84,28 @@ function PostCard({ post, page }) {
         }
         action={
           user._id === postAuthorId && (
-            <Stack direction="row">
-              <IconButton onClick={handleDeleteConfirmation}>
-                <DeleteIcon sx={{ fontSize: 20 }} />
-              </IconButton>
-              <IconButton>
-                <EditIcon sx={{ fontSize: 20 }} />
-              </IconButton>
-            </Stack>
+            <>
+              <Stack direction="row">
+                <IconButton onClick={handleDeleteConfirmation}>
+                  <DeleteIcon sx={{ fontSize: 20 }} />
+                </IconButton>
+                <IconButton onClick={handleEdit}>
+                  <EditIcon sx={{ fontSize: 20 }} />
+                </IconButton>
+              </Stack>
+              <ConfirmationDialog
+                openConfirmationDialog={openConfirmationDialog}
+                handleCloseConfirmationDialog={handleCloseConfirmationDialog}
+                handleAgreeConfirmation={handleAgreeConfirmation}
+                title="Delete Confirmation"
+                content="Are you sure you want to delete this post?"
+              />
+              <PostEditDialog
+                post={post}
+                openEditForm={openEditForm}
+                handleCloseEditPostForm={handleCloseEditPostForm}
+              />
+            </>
           )
         }
       />
@@ -104,14 +129,6 @@ function PostCard({ post, page }) {
         <PostReaction post={post} />
         <CommentList postId={post._id} />
         <CommentForm postId={post._id} />
-
-        <ConfirmationDialog
-          openConfirmationDialog={openConfirmationDialog}
-          handleCloseConfirmationDialog={handleCloseConfirmationDialog}
-          handleAgreeConfirmation={handleAgreeConfirmation}
-          title="Delete Confirmation"
-          content="Are you sure you want to delete this post?"
-        />
       </Stack>
     </Card>
   );

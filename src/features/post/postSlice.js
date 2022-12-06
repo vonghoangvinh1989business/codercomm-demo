@@ -63,8 +63,41 @@ const slice = createSlice({
       );
       delete state.postsById[deletedPost._id];
     },
+    updatePostSuccess(state, action) {
+      state.isLoading = false;
+      state.error = null;
+      const { _id, content, image } = action.payload;
+      state.postsById[_id] = {
+        ...state.postsById[_id],
+        content,
+        image,
+      };
+    },
   },
 });
+
+export const updatePost =
+  ({ postId, content, image }) =>
+  async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const data = {
+        content,
+      };
+
+      if (image instanceof File) {
+        const imageUrl = await cloudinaryUpload(image);
+        data.image = imageUrl;
+      }
+
+      const response = await apiService.put(`/posts/${postId}`, data);
+      dispatch(slice.actions.updatePostSuccess(response.data?.data));
+      toast.success("Update Post Successfully");
+    } catch (error) {
+      dispatch(slice.actions.hasError(error.message));
+      toast.error(error.message);
+    }
+  };
 
 export const deletePost =
   ({ postId, userId, page }) =>
